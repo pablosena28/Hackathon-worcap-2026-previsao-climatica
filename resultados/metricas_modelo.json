@@ -1,0 +1,14 @@
+{
+  "metodo": "tendencia_climatica_mais_xgboost_de_anomalias",
+  "periodo_treino_modelo": "1993-01 a 2022-12",
+  "periodo_tendencia": "1983-01 a 2022-12",
+  "amostras_treino": 1440000,
+  "peso_anomalia": 0.5,
+  "rmse_validacao_2021_2022": 1.8390098536794686,
+  "rmse_referencia_validacao": 1.8519731687852707,
+  "linhas_submissao": 1885464,
+  "previsao_min": 0.0,
+  "previsao_media": 3.5372512340545654,
+  "previsao_max": 107.86798858642578,
+  "segundos_execucao": 69.79
+}
