@@ -70,6 +70,8 @@ Mais detalhes estão em [docs/METODOLOGIA.md](docs/METODOLOGIA.md).
 .
 ├── notebooks/
 │   └── Notebook_WorCAP_2026.ipynb
+├── scripts/
+│   └── baixar_dados.py
 ├── src/
 │   └── modelo_worcap_2026.py
 ├── resultados/
@@ -82,29 +84,105 @@ Mais detalhes estão em [docs/METODOLOGIA.md](docs/METODOLOGIA.md).
 └── README.md
 ```
 
-## Como executar
+## Como reproduzir o projeto
 
-### Kaggle
+A maneira mais simples é executar o notebook dentro do Kaggle. Também é possível reproduzir todo o pipeline em um computador local. Em ambos os casos, é necessário possuir uma conta gratuita no Kaggle e aceitar as regras da competição para ter acesso autorizado aos dados.
 
-1. Acesse a [competição](https://www.kaggle.com/competitions/previsao-climatica-de-precipitacao-sobre-a-america-do-sul).
-2. Adicione os dados da competição como entrada de um notebook.
-3. Importe [notebooks/Notebook_WorCAP_2026.ipynb](notebooks/Notebook_WorCAP_2026.ipynb).
-4. Confirme o caminho de `DATA_DIR`.
-5. Execute todas as células.
+### Opção 1  Executar no Kaggle
 
-### Linha de comando
+1. Entre na [página da competição](https://www.kaggle.com/competitions/previsao-climatica-de-precipitacao-sobre-a-america-do-sul), faça login e aceite as regras.
+2. Baixe [notebooks/Notebook_WorCAP_2026.ipynb](notebooks/Notebook_WorCAP_2026.ipynb) neste repositório.
+3. No Kaggle, escolha **Create > New Notebook** e use **File > Import Notebook** para enviar o arquivo.
+4. No painel direito do notebook, selecione **Add Input** e procure por **Previsão Climática de Precipitação sobre a América do Sul**.
+5. Confirme que a pasta de entrada é:
 
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-
-python src/modelo_worcap_2026.py \
-  --dados /caminho/para/dados_worcap \
-  --saida ./resultados
+```text
+/kaggle/input/previsao-climatica-de-precipitacao-sobre-a-america-do-sul
 ```
 
-No Windows, ative o ambiente com `.venv\Scripts\activate`.
+6. Escolha **Run All**. O notebook instalará as dependências, auditará os dados, treinará o modelo e criará a submissão.
+7. Ao final, abra a pasta `/kaggle/working/resultados_worcap` para baixar os arquivos gerados.
+
+### Opção 2  Executar localmente
+
+#### 1  Pré requisitos
+
+- Python 3.10 ou superior;
+- Git;
+- pelo menos 16 GB de memória RAM recomendados;
+- conta no Kaggle com as regras da competição aceitas;
+- credenciais da API do Kaggle configuradas no computador.
+
+#### 2  Clonar o repositório
+
+```bash
+git clone https://github.com/pablosena28/Hackathon-worcap-2026-previsao-climatica.git
+cd Hackathon-worcap-2026-previsao-climatica
+```
+
+#### 3  Criar o ambiente e instalar as dependências
+
+Linux ou macOS:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+Windows PowerShell:
+
+```powershell
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+#### 4  Configurar o acesso ao Kaggle
+
+Na sua conta do Kaggle, abra **Settings > API** e gere uma credencial. Siga as instruções exibidas pelo Kaggle para autenticar o `kagglehub`. A conta precisa ter aceitado as regras da competição.
+
+#### 5  Baixar os dados oficiais
+
+```bash
+python scripts/baixar_dados.py
+```
+
+O comando exibirá no terminal o caminho completo da pasta em que os arquivos foram armazenados. Copie esse caminho para o próximo passo.
+
+#### 6  Executar o pipeline
+
+```bash
+python src/modelo_worcap_2026.py \
+  --dados "CAMINHO_EXIBIDO_PELO_DOWNLOAD" \
+  --saida ./resultados_worcap
+```
+
+No Windows PowerShell, use uma única linha:
+
+```powershell
+python src/modelo_worcap_2026.py --dados "CAMINHO_EXIBIDO_PELO_DOWNLOAD" --saida .\resultados_worcap
+```
+
+#### 7  Conferir os resultados
+
+Depois da execução, a pasta `resultados_worcap` conterá:
+
+- `submission_worcap_2026.csv`, com 1.885.464 previsões;
+- `modelo_xgboost_worcap.json`, com o modelo treinado;
+- `metricas_modelo.json`, com métricas e estatísticas da execução.
+
+Uma execução bem-sucedida termina com o resumo das métricas no terminal. O código interrompe automaticamente a execução se encontrar IDs duplicados, valores ausentes, previsões negativas ou um CSV truncado.
+
+## Solução de problemas
+
+- **Acesso negado ao baixar os dados:** confirme que entrou na página da competição e aceitou as regras.
+- **Arquivo não encontrado:** use exatamente a pasta impressa por `scripts/baixar_dados.py` no argumento `--dados`.
+- **Memória insuficiente:** execute o notebook no Kaggle, que é a rota recomendada.
+- **PowerShell bloqueou a ativação:** execute `Set-ExecutionPolicy -Scope Process Bypass` e tente ativar novamente.
+- **Pacote ausente:** confirme que o ambiente virtual está ativo e repita `pip install -r requirements.txt`.
 
 ## Arquivos gerados
 
