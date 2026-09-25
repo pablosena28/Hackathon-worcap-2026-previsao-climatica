@@ -4,3 +4,4 @@ xarray>=2023.1
 h5netcdf>=1.2
 h5py>=3.8
 xgboost>=2.0,<4
+kagglehub>=0.3
