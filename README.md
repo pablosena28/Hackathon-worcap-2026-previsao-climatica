@@ -1,0 +1,1 @@
+# Hackathon-worcap-2026-previsao-climatica
